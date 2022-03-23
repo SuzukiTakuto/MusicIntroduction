@@ -24,7 +24,7 @@ services:
       - mongodb
     container_name: go_container
     ports:
-      - 8000:8080
+      - 8000:8000
     tty: true
     volumes:
       - .:/usr/src/backend
