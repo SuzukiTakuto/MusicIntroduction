@@ -10,7 +10,7 @@ func main() {
 	engine := gin.Default()
 	engine.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"message": "hello ts",
+			"message": "hello tsっっっs",
 		})
 	})
 	engine.Run(":8000")
