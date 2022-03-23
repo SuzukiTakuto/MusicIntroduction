@@ -28,7 +28,7 @@ services:
     tty: true
     volumes:
       - .:/usr/src/backend
-    command: sh -c "cd backend && go run main.go"
+    command: sh -c "cd backend && go mod tidy && go install github.com/cosmtrek/air@latest && air -c .air.toml &&  go run main.go"
   
   mongodb:
     image: mongo
