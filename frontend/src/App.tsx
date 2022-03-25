@@ -1,24 +1,32 @@
-import React from 'react';
-import Profile from './components/Profile';
-import TimeLine from './components/TimeLine';
-import Search from './components/Search';
-import styled from 'styled-components';
+import React, { useState, useEffect } from 'react';
+import MainPage from './pages/MainPage';
+import Login from './pages/Login';
+import {BrowserRouter, Switch, Route} from "react-router-dom";
+import { getTokenFromUrl } from './spotify/Spotify';
+
 
 function App() {
+  const [token, setToken] = useState<string>("");
+
+  useEffect(() => {
+    const hash = getTokenFromUrl();
+    console.log(hash);
+    window.location.hash = "";
+    const token = hash.access_token;
+
+    if (token) {
+      setToken(token)
+    }
+
+  }, []);
+
   return (
-    <Wrapper>
-      <Profile />
-      <TimeLine />
-      <Search />
-    </Wrapper>
+    <>
+      { token ? <MainPage/> : <Login/> } 
+    </>
   );
 }
 
-const Wrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding: 30px 21px 32px;
-  background-color: #E1E3E6;
-`;
+
 
 export default App;
