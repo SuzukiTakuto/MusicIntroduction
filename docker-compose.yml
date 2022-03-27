@@ -37,6 +37,8 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: MusicIntroduction
+      TZ: Asia/Tokyo
     ports:
       - 27017:27017
     volumes:
