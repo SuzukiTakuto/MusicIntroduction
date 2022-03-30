@@ -82,6 +82,5 @@ func main() {
 	basepath := server.Group("/v1")
 	usercontroller.RegisterUserRoutes(basepath)
 
-	log.Println("111111111111111111111111")
 	log.Fatal(server.Run(":8000"))
 }

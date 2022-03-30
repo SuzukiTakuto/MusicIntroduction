@@ -8,12 +8,6 @@ type User = {
 };
 
 const Signup = () => {
-  const [newUser, setNewUser] = useState<User>()
-
-  const [username, setuUername] = useState("");
-  const [email, setuEmail] = useState("");
-  const [password, setuPassword] = useState("");
-
   const { register, watch, handleSubmit, formState } = useForm<User>({
     mode: 'onSubmit',
     reValidateMode: 'onChange',
@@ -27,7 +21,7 @@ const Signup = () => {
   const handleOnSubmit: SubmitHandler<User> = async (values) => {
     console.log(values);
 
-    await fetch ("http://localhost:8000/v1/user/create", {
+    return fetch ("http://localhost:8000/v1/user/create", {
         method: 'POST',
         mode: 'cors',
         cache: 'no-cache',
@@ -38,9 +32,10 @@ const Signup = () => {
         redirect: 'follow',
         body: JSON.stringify(values)
     }).then((res) => {
-        res.json();
+        return res.json();
     }).then((data) => {
-        console.log(data);
+        console.log(data.token)
+        localStorage.setItem("token", data.token)
     }).catch(()=>{
         console.log("error");
     });
