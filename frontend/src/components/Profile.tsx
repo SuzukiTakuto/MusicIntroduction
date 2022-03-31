@@ -10,10 +10,11 @@ type Props = {
 }
 
 const Profile = (props: Props) => {
+    console.log(props);
   return (
     <Container>
         <ProfileTop>
-            <ProfileIcon img={'iconPath'} />
+            <ProfileIcon img={props.iconImg} />
             <Username>{props.username}</Username>
         </ProfileTop>
         <PostList />
@@ -30,7 +31,8 @@ const Container = styled.div`
 
 const ProfileTop = styled.div`
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
+    align-items: center;
     border-bottom: 1px solid #000;
 `;
 
@@ -39,6 +41,9 @@ type ImgProps = {
 };
 
 const ProfileIcon = styled.div<ImgProps>`
+    width: 46.6%;
+    padding-top: 46.6%;
+    border-radius: 50%;
     background-image: ${props => `url(${props.img})`};
 `;
 

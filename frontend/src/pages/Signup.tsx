@@ -4,6 +4,8 @@ import { User, Limit } from '../type/type';
 import styled from 'styled-components';
 
 const Signup = () => {
+  const [imageUrl, setImageUrl] = useState<string>("");
+
   const { register, watch, handleSubmit, formState } = useForm<User>({
     mode: 'onSubmit',
     reValidateMode: 'onChange',
@@ -17,6 +19,7 @@ const Signup = () => {
 
   const handleOnSubmit: SubmitHandler<User> = async (values) => {
     console.log(values);
+    values.iconImg = imageUrl;
 
     return fetch ("http://localhost:8000/v1/user/create", {
         method: 'POST',
@@ -51,6 +54,7 @@ const Signup = () => {
 
   const upImage = async (file: File) => {
     const imgUrl: string  = await readImage(file);
+    setImageUrl(imgUrl);
     displayProcess(imgUrl);
   }
 
@@ -105,6 +109,7 @@ const Signup = () => {
         });
         resolve(scale);
       }
+      newImg.src = url;
     });
   }
 
@@ -139,7 +144,7 @@ const Signup = () => {
               id="iconImg"
               type="file"
               accept="image/jpeg"
-              {...register('username', {
+              {...register('iconImg', {
                 required: '* this is required filed'
               })} 
               onChange={handleAddImg}
@@ -163,6 +168,7 @@ const Signup = () => {
           {...register('username', {
             required: '* this is required filed'
           })} 
+          maxLength={6}
         />
 
         <label htmlFor='email'>Email</label>
