@@ -34,6 +34,7 @@ const Login = () => {
     }).then((data) => {
         localStorage.setItem("token", data.token)
         console.log(data.token)
+        window.location.href = "http://localhost:3000";
     }).catch(()=>{
         console.log("error");
     });

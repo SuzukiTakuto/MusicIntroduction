@@ -2,12 +2,19 @@ import React from 'react';
 import styled from 'styled-components';
 import PostList from '../subComponents/PostList';
 
-const Profile = () => {
+type Props = {
+    userId: string,
+    username: string,
+    email: string,
+    iconImg: string
+}
+
+const Profile = (props: Props) => {
   return (
     <Container>
         <ProfileTop>
             <ProfileIcon img={'iconPath'} />
-            <Username>takt</Username>
+            <Username>{props.username}</Username>
         </ProfileTop>
         <PostList />
     </Container>
@@ -27,11 +34,11 @@ const ProfileTop = styled.div`
     border-bottom: 1px solid #000;
 `;
 
-type Props = {
+type ImgProps = {
     img: string
 };
 
-const ProfileIcon = styled.div<Props>`
+const ProfileIcon = styled.div<ImgProps>`
     background-image: ${props => `url(${props.img})`};
 `;
 

@@ -1,11 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useForm, SubmitHandler, SubmitErrorHandler } from 'react-hook-form';
-
-type User = {
-    username: string,
-    email: string,
-    password: string
-};
+import { User, Limit } from '../type/type';
+import styled from 'styled-components';
 
 const Signup = () => {
   const { register, watch, handleSubmit, formState } = useForm<User>({
@@ -14,7 +10,8 @@ const Signup = () => {
     defaultValues: {
       username: '',
       email: '',
-      password: ''
+      password: '',
+      iconImg: ''
     }
   })
 
@@ -45,9 +42,117 @@ const Signup = () => {
     console.log(errors)
   }
 
+  const handleAddImg = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.currentTarget.files !== null) {
+      const file = e.currentTarget.files[0];
+      upImage(file)
+    }
+  }
+
+  const upImage = async (file: File) => {
+    const imgUrl: string  = await readImage(file);
+    displayProcess(imgUrl);
+  }
+
+  const readImage = (img: File) => {
+    return new Promise<string>((resolve) => {
+      const fileReader = new FileReader();
+      fileReader.onload = () => {
+        resolve(fileReader.result as string);
+      }
+      fileReader.readAsDataURL(img);
+    });
+  }
+
+  const newImg = new Image();
+
+  const [canvas, setCanvas] = useState<HTMLCanvasElement>();
+  const [context,setContext] = useState<CanvasRenderingContext2D>();
+
+  const displayProcess = async (imgUrl: string) => {
+    if (!canvas || !context) {
+      return
+    }
+    let scale: number = await getImageRetio(imgUrl);
+    displayImage(newImg, scale);
+    //imageMove(scale);
+  }
+
+  const [limit, setLimit] = useState<Limit>({x: 0, y: 0});
+
+  const getImageRetio = (url: string) => {
+    return new Promise<number>((resolve, reject) => {
+      let scale: number;
+
+      if (!canvas || !context) {
+        return
+      }
+
+      newImg.onload = () => {
+        context.restore();
+        let ratio = newImg.width / newImg.height;
+        switch (true) {
+          case ratio < 1:
+            scale = canvas.width / newImg.width;
+            break;
+          case ratio >= 1:
+            scale = canvas.height / newImg.height;
+            break;
+        }
+        setLimit({
+          x: newImg.width * scale,
+          y: newImg.height * scale,
+        });
+        resolve(scale);
+      }
+    });
+  }
+
+  const displayImage = (img: HTMLImageElement, scale: number) => {
+    if (!context) {
+      return
+    }
+    context.save();
+    context.scale(scale, scale);
+    context.drawImage(img, 0, 0);
+  }
+
+
+  useEffect(()=>{
+    const gotCanvas = document.getElementById("canvas") as HTMLCanvasElement;
+    setCanvas(gotCanvas);
+    if (!gotCanvas) return
+    const canvasContext = gotCanvas.getContext("2d") as CanvasRenderingContext2D;
+    setContext(canvasContext);
+  },[]);
+
   return (
     <>
       <form onSubmit={handleSubmit(handleOnSubmit, handleOnError)} >
+        <CanvasContainer>
+          <Canvas>
+            <canvas width="300" height="300" id="canvas"></canvas>
+          </Canvas>
+          <label htmlFor='iconImg'>
+            画像選択
+            <input 
+              id="iconImg"
+              type="file"
+              accept="image/jpeg"
+              {...register('username', {
+                required: '* this is required filed'
+              })} 
+              onChange={handleAddImg}
+            />
+          </label>
+          {!!formState.errors.iconImg && 
+            <p>{formState.errors.iconImg.message}</p>
+          }
+        </CanvasContainer>
+      
+      
+
+      
         <label htmlFor='name'>User Name</label>
         {!!formState.errors.username && 
           <p>{formState.errors.username.message}</p>
@@ -60,24 +165,24 @@ const Signup = () => {
           })} 
         />
 
-        <label htmlFor='name'>Email</label>
+        <label htmlFor='email'>Email</label>
         {!!formState.errors.email && 
           <p>{formState.errors.email.message}</p>
         }
         <input
-          id='name'
+          id='email'
           type="email" 
           {...register('email', {
             required: '* this is required filed'
           })} 
         />
 
-        <label htmlFor='name'>Password</label>
+        <label htmlFor='password'>Password</label>
         {!!formState.errors.password && 
           <p>{formState.errors.password.message}</p>
         }
         <input
-          id='name'
+          id='passwrod'
           type="password" 
           {...register('password', {
             required: '* this is required filed'
@@ -93,5 +198,16 @@ const Signup = () => {
     </>
   )
 }
+
+const CanvasContainer = styled.div`
+
+`;
+
+const Canvas = styled.div`
+  border: 1px solid #222;
+  width: 300px;
+  height: auto;
+  margin: 0 auto;
+`;
 
 export default Signup
