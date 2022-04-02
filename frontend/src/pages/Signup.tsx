@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useForm, SubmitHandler, SubmitErrorHandler } from 'react-hook-form';
 import { User, Limit } from '../type/type';
 import styled from 'styled-components';
+import { resolve } from 'path';
+import { rejects } from 'assert';
 
 const Signup = () => {
   const [imageUrl, setImageUrl] = useState<string>("");
@@ -36,6 +38,7 @@ const Signup = () => {
     }).then((data) => {
         console.log(data.token)
         localStorage.setItem("token", data.token)
+        window.location.href = "http://localhost:3000/login";
     }).catch(()=>{
         console.log("error");
     });
@@ -120,6 +123,7 @@ const Signup = () => {
     context.save();
     context.scale(scale, scale);
     context.drawImage(img, 0, 0);
+    setImageUrl(context.canvas.toDataURL());
   }
 
 
@@ -168,7 +172,7 @@ const Signup = () => {
           {...register('username', {
             required: '* this is required filed'
           })} 
-          maxLength={6}
+          maxLength={4}
         />
 
         <label htmlFor='email'>Email</label>

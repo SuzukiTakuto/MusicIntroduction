@@ -4,6 +4,7 @@ import TimeLine from '../components/TimeLine';
 import Search from '../components/Search';
 import styled from 'styled-components';
 import { User } from '../type/type';
+import { getTokenFromUrl } from '../spotify/Spotify';
 
 const MainPage = () => {
   const [username, setUsername] = useState("");
@@ -36,7 +37,17 @@ const MainPage = () => {
       setIconImg(user.iconImg);
     }).catch(() => {
       console.log("error");
+      window.location.href = "http://localhost:3000/login";
     });
+
+    const hash = getTokenFromUrl();
+    console.log(hash )
+    window.location.hash = "";
+    const accessToken = hash.access_token;
+
+    if (accessToken) {
+      localStorage.setItem("accessToken", accessToken)
+    }
   }, []);
 
   return (

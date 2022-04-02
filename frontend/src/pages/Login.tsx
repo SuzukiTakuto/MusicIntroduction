@@ -1,5 +1,6 @@
 import React from 'react';
 import { useForm, SubmitHandler, SubmitErrorHandler } from 'react-hook-form';
+import { accessUrl } from '../spotify/Spotify';
 
 type LoginUser = {
   email: string,
@@ -34,7 +35,7 @@ const Login = () => {
     }).then((data) => {
         localStorage.setItem("token", data.token)
         console.log(data.token)
-        window.location.href = "http://localhost:3000";
+        window.location.href = accessUrl;
     }).catch(()=>{
         console.log("error");
     });

@@ -3,7 +3,7 @@ export const  authEndpoint = "https://accounts.spotify.com/authorize";
 
 const redirectUri = "http://localhost:3000/";
 
-const clientId = "";
+const clientId = "f30037de13d448009ac2269b80081115";
 
 // 対応する範囲を決める
 const scopes = [

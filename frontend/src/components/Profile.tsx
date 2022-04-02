@@ -14,7 +14,7 @@ const Profile = (props: Props) => {
   return (
     <Container>
         <ProfileTop>
-            <ProfileIcon img={props.iconImg} />
+            <ProfileIcon src={props.iconImg} />
             <Username>{props.username}</Username>
         </ProfileTop>
         <PostList />
@@ -40,11 +40,9 @@ type ImgProps = {
     img: string
 };
 
-const ProfileIcon = styled.div<ImgProps>`
-    width: 46.6%;
-    padding-top: 46.6%;
+const ProfileIcon = styled.img`
+    width: 35%;
     border-radius: 50%;
-    background-image: ${props => `url(${props.img})`};
 `;
 
 const Username = styled.p`
