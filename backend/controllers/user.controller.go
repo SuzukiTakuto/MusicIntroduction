@@ -41,7 +41,7 @@ func VerifyPassword(userPassword string, providedPassword string) (bool, string)
 	return check, msg
 }
 
-func New(userservice services.UserService) UserController {
+func NewUser(userservice services.UserService) UserController {
 	return UserController{
 		UserService: userservice,
 	}
@@ -68,6 +68,7 @@ func (uc *UserController) CreateUser(ctx *gin.Context) {
 
 	err := uc.UserService.CreateUser(&user)
 	if err != nil {
+		log.Panic(err)
 		ctx.JSON(http.StatusBadGateway, gin.H{"message": err.Error()})
 		return
 	}

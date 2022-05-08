@@ -1,52 +1,40 @@
 import React from 'react';
 import styled from 'styled-components';
 import PostList from '../subComponents/PostList';
+import { User } from '../type';
 
 type Props = {
-    userId: string,
-    username: string,
-    email: string,
-    iconImg: string
+    user: User,
 }
 
 const Profile = (props: Props) => {
-    console.log(props);
+  const user = props.user;
   return (
     <Container>
-        <ProfileTop>
-            <ProfileIcon src={props.iconImg} />
-            <Username>{props.username}</Username>
-        </ProfileTop>
-        <PostList />
+        <ProfileIcon src={user.iconImg} />
+        <Username>{user.username}</Username>
     </Container>
   )
 }
 
 const Container = styled.div`
-    width: 23.2804%;
-    height: calc(100vh - 62px);
-    background-color: #fff;
-    border-radius: 20px;
-`;
-
-const ProfileTop = styled.div`
+    position: absolute;
     display: flex;
-    justify-content: space-around;
-    align-items: center;
-    border-bottom: 1px solid #000;
+    top: 18px;
+    right: 18px;
+    z-index: 10;
 `;
-
-type ImgProps = {
-    img: string
-};
 
 const ProfileIcon = styled.img`
-    width: 35%;
+    width: 40px;
     border-radius: 50%;
+    margin-right: 20px;
 `;
 
 const Username = styled.p`
-    font-size: 48px;
+    font-size: 32px;
+    color: #fff;
+    margin: 0;
 `;
 
 export default Profile

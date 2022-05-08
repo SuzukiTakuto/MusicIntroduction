@@ -1,69 +1,119 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext, createContext } from 'react';
 import Profile from '../components/Profile';
 import TimeLine from '../components/TimeLine';
 import Search from '../components/Search';
 import styled from 'styled-components';
-import { User } from '../type/type';
+import { User, Post, SongData } from '../type';
 import { getTokenFromUrl } from '../spotify/Spotify';
+import { getMethod, spotifyGetMethod } from '../utils';
+import { useHistory } from 'react-router-dom';
+import { Context, PlaylistContext } from '../context';
 
 const MainPage = () => {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [userId, setUserId] = useState("");
-  const [iconImg, setIconImg] = useState("");
+  const history = useHistory();
+  const [user, setUser] = useState<User>({
+    username: '',
+    email: '',
+    userId: '',
+    iconImg: '',
+    spotifyId: ''
+  });
+
+  const [postInput, setPostInput] = useState(false);
+  const [postData, setPostData] = useState<Post>({
+    albumImg: "",
+    songName: "",
+    artistName: "",
+    spotifyId: "",
+  });
+  const [playlistItems, setPlaylistItems] = useState<SongData[]>([]);
+  const [uris, setUris] = useState<string[]>([]);
+  const [isUpdate, setIsUpdate] = useState(false);
+  const [isCreated, setIsCreated] = useState(false);
 
   if (!localStorage.getItem("token")) {
     window.location.href = "http://localhost:3000/login";
   }
 
+  let apiData: any;
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    fetch("http://localhost:8000/v1/user/get/", {
-      method: 'GET',
-      mode: 'cors',
-      cache: 'no-cache',
-      credentials: 'same-origin',
-      headers: {
-          'Authorization': 'Bearer ' + token,
-          'Content-Type': 'application/json',
-      },
-      redirect: 'follow',
-    }).then((res) => {
+    fetch("http://localhost:8000/v1/user/get/", getMethod).then((res) => {
       return res.json();
-    }).then((user) => {
-      setUserId(user.userId);
-      setUsername(user.username);
-      setEmail(user.email);
-      setIconImg(user.iconImg);
+    }).then((data) => {
+      console.log(localStorage.getItem("accessToken"))
+      apiData = data;
     }).catch(() => {
       console.log("error");
-      window.location.href = "http://localhost:3000/login";
+      history.push('/login');
+    });
+    getAccessToken();
+    
+    
+  }, []);
+
+  let spotifyData: any;
+  useEffect(() => {
+    fetch("https://api.spotify.com/v1/me", spotifyGetMethod).then((res) => {
+      return res.json();
+    }).then((data) => {
+      console.log(data);
+      spotifyData = data;
+      userSetting();
+    }).catch((err: Error) => {
+      console.log(err);
     });
 
+    
+  }, []);
+
+  const getAccessToken = () => {
     const hash = getTokenFromUrl();
-    console.log(hash )
+    console.log(hash)
     window.location.hash = "";
     const accessToken = hash.access_token;
-
+    
     if (accessToken) {
-      localStorage.setItem("accessToken", accessToken)
+      localStorage.setItem("accessToken", accessToken);
     }
-  }, []);
+  }
+
+  const userSetting = () => {
+    console.log(apiData);
+    console.log(spotifyData);
+
+    if (!apiData && !spotifyData) return
+
+    const tempUser = {
+      username: apiData.username,
+      email: apiData.email,
+      userId: apiData.userId,
+      iconImg: apiData.iconImg,
+      spotifyId: spotifyData.id
+    };
+    console.log(tempUser)
+    setUser(tempUser);
+  }
 
   return (
     <Wrapper>
-      <Profile userId={userId} username={username} email={email} iconImg={iconImg} />
-      <TimeLine />
-      <Search />
+      <Context.Provider value={{postInput, setPostInput, postData, setPostData, user, isUpdate, setIsUpdate}}>
+        <PlaylistContext.Provider value={{playlistItems, setPlaylistItems, uris, setUris, isCreated, setIsCreated}}>
+          <Profile user={user} />
+          <Search />
+          <TimeLine />
+        </PlaylistContext.Provider>
+      </Context.Provider>
     </Wrapper>
   )
 }
 
 const Wrapper = styled.div`
+  box-sizing: border-box;
+  height: 100vh;
   display: flex;
   justify-content: space-between;
-  padding: 30px 21px 32px;
   background-color: #E1E3E6;
+  position: relative;
 `;
 
 export default MainPage

@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useForm, SubmitHandler, SubmitErrorHandler } from 'react-hook-form';
-import { User, Limit } from '../type/type';
+import { LoginUser, Limit } from '../type';
 import styled from 'styled-components';
-import { resolve } from 'path';
-import { rejects } from 'assert';
+import { Input, FormHeader, Container, Form } from '../components/components';
 
 const Signup = () => {
   const [imageUrl, setImageUrl] = useState<string>("");
 
-  const { register, watch, handleSubmit, formState } = useForm<User>({
+  const { register, watch, handleSubmit, formState } = useForm<LoginUser>({
     mode: 'onSubmit',
     reValidateMode: 'onChange',
     defaultValues: {
@@ -17,9 +16,9 @@ const Signup = () => {
       password: '',
       iconImg: ''
     }
-  })
+  });
 
-  const handleOnSubmit: SubmitHandler<User> = async (values) => {
+  const handleOnSubmit: SubmitHandler<LoginUser> = async (values) => {
     console.log(values);
     values.iconImg = imageUrl;
 
@@ -36,15 +35,15 @@ const Signup = () => {
     }).then((res) => {
         return res.json();
     }).then((data) => {
-        console.log(data.token)
+        console.log(data)
         localStorage.setItem("token", data.token)
         window.location.href = "http://localhost:3000/login";
-    }).catch(()=>{
-        console.log("error");
+    }).catch((err: Error)=>{
+        console.log(err);
     });
   }
 
-  const handleOnError: SubmitErrorHandler<User> = (errors) => {
+  const handleOnError: SubmitErrorHandler<LoginUser> = (errors) => {
     console.log(errors)
   }
 
@@ -136,8 +135,9 @@ const Signup = () => {
   },[]);
 
   return (
-    <>
-      <form onSubmit={handleSubmit(handleOnSubmit, handleOnError)} >
+    <Container>
+      <Form onSubmit={handleSubmit(handleOnSubmit, handleOnError)} >
+        <FormHeader>アカウント作成</FormHeader>
         <CanvasContainer>
           <Canvas>
             <canvas width="300" height="300" id="canvas"></canvas>
@@ -161,53 +161,68 @@ const Signup = () => {
       
       
 
-      
-        <label htmlFor='name'>User Name</label>
-        {!!formState.errors.username && 
-          <p>{formState.errors.username.message}</p>
-        }
-        <input
-          id='name'
-          type="text" 
-          {...register('username', {
-            required: '* this is required filed'
-          })} 
-          maxLength={4}
-        />
+        <Input>
+          <label htmlFor='name'>User Name</label>
+          {!!formState.errors.username && 
+            <p>{formState.errors.username.message}</p>
+          }
+          <input
+            id='name'
+            type="text" 
+            {...register('username', {
+              required: '* this is required filed'
+            })} 
+            maxLength={4}
+          />
+        </Input>
+        
+        <Input>
+          <label htmlFor='email'>Email</label>
+          {!!formState.errors.email && 
+            <p>{formState.errors.email.message}</p>
+          }
+          <input
+            id='email'
+            type="email" 
+            {...register('email', {
+              required: '* this is required filed'
+            })} 
+          />
+        </Input>
+        
+        <Input>
+          <label htmlFor='password'>Password</label>
+          {!!formState.errors.password && 
+            <p>{formState.errors.password.message}</p>
+          }
+          <input
+            id='passwrod'
+            type="password" 
+            {...register('password', {
+              required: '* this is required filed'
+            })} 
+          />
+        </Input>
+        
 
-        <label htmlFor='email'>Email</label>
-        {!!formState.errors.email && 
-          <p>{formState.errors.email.message}</p>
-        }
-        <input
-          id='email'
-          type="email" 
-          {...register('email', {
-            required: '* this is required filed'
-          })} 
-        />
-
-        <label htmlFor='password'>Password</label>
-        {!!formState.errors.password && 
-          <p>{formState.errors.password.message}</p>
-        }
-        <input
-          id='passwrod'
-          type="password" 
-          {...register('password', {
-            required: '* this is required filed'
-          })} 
-        />
-
-
-        // 送信ボタン
-        <button type="submit" disabled={!formState.isDirty || formState.isSubmitting}>
+        <Button type="submit" disabled={!formState.isDirty || formState.isSubmitting}>
            Click
-         </button>
-      </form>
-    </>
+         </Button>
+      </Form>
+    </Container>
   )
 }
+
+const Button = styled.button`
+  border: none;
+  width: 80px;
+  height: 30px;
+  border-radius: 30px;
+  background-color: #000;
+  color: #fff;
+  display: block;
+  margin: 0 auto;
+`;
 
 const CanvasContainer = styled.div`
 

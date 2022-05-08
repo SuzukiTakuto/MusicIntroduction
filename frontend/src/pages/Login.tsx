@@ -1,6 +1,8 @@
 import React from 'react';
 import { useForm, SubmitHandler, SubmitErrorHandler } from 'react-hook-form';
 import { accessUrl } from '../spotify/Spotify';
+import { Input, FormHeader, Container, Form } from '../components/components';
+import styled from 'styled-components';
 
 type LoginUser = {
   email: string,
@@ -47,41 +49,57 @@ const Login = () => {
   }
 
   return (
-    <>
-      <form onSubmit={handleSubmit(handleOnSubmit, handleOnError)} >
-
-        <label htmlFor='email'>Email</label>
-        {!!formState.errors.email && 
-          <p>{formState.errors.email.message}</p>
-        }
-        <input
-          id='email'
-          type="email" 
-          {...register('email', {
-            required: '* this is required filed'
-          })} 
-        />
-
-        <label htmlFor='password'>Password</label>
-        {!!formState.errors.password && 
-          <p>{formState.errors.password.message}</p>
-        }
-        <input
-          id='password'
-          type="password" 
-          {...register('password', {
-            required: '* this is required filed'
-          })} 
-        />
-
-
-        // 送信ボタン
-        <button type="submit" disabled={!formState.isDirty || formState.isSubmitting}>
-           Click
-         </button>
-      </form>
-    </>
+    <Container>
+      
+      <Form onSubmit={handleSubmit(handleOnSubmit, handleOnError)} >
+        <FormHeader>ログイン</FormHeader>
+        <Input>
+          <label htmlFor='email'>Email</label>
+          {!!formState.errors.email && 
+            <p>{formState.errors.email.message}</p>
+          }
+          <input
+            id='email'
+            type="email" 
+            {...register('email', {
+              required: '* this is required filed'
+            })} 
+          />
+        </Input>
+        
+        <Input>
+          <label htmlFor='password'>Password</label>
+          {!!formState.errors.password && 
+            <p>{formState.errors.password.message}</p>
+          }
+          <input
+            id='password'
+            type="password" 
+            {...register('password', {
+              required: '* this is required filed'
+            })} 
+          />
+        </Input>
+        
+        <Button type="submit" disabled={!formState.isDirty || formState.isSubmitting}>
+           ログイン
+         </Button>
+      </Form>
+    </Container>
   )
 }
+
+const Button = styled.button`
+  border: none;
+  width: 80px;
+  height: 30px;
+  border-radius: 30px;
+  background-color: #000;
+  color: #fff;
+  display: block;
+  margin: 0 auto;
+`;
+
+
 
 export default Login
