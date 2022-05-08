@@ -32,7 +32,7 @@ const MainPage = () => {
   const [isCreated, setIsCreated] = useState(false);
 
   if (!localStorage.getItem("token")) {
-    window.location.href = "http://localhost:3000/login";
+    history.push('/login');
   }
 
   let apiData: any;
@@ -47,8 +47,6 @@ const MainPage = () => {
       history.push('/login');
     });
     getAccessToken();
-    
-    
   }, []);
 
   let spotifyData: any;
@@ -62,8 +60,6 @@ const MainPage = () => {
     }).catch((err: Error) => {
       console.log(err);
     });
-
-    
   }, []);
 
   const getAccessToken = () => {
